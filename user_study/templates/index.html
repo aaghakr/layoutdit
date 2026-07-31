@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IntentDiT user study</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Poster layout user study</h1>
+    <p>You will see two parts:</p>
+    <ol>
+      <li><strong>Part A &mdash; pairwise preference</strong> ({{ part_a_size }} comparisons,
+          ~12 minutes). Quality and instruction-following comparisons are asked
+          separately using protocol-matched methods.</li>
+      <li><strong>Part B &mdash; severity rating</strong> ({{ part_b_size }} examples,
+          ~5 minutes). Rate how badly each example fails on a 1&ndash;7 scale.</li>
+    </ol>
+    <p>Total time: ~17 minutes. Your responses are anonymized.</p>
+    {% if manifest_n_a == 0 or manifest_n_b == 0 %}
+    <p class="muted" style="border:1px solid #c90; padding:0.75rem; border-radius:8px; background:#fff8e6;">
+      <strong>Setup required:</strong> This server currently has
+      <strong>{{ manifest_n_a }}</strong> Part&nbsp;A trial(s) and
+      <strong>{{ manifest_n_b }}</strong> Part&nbsp;B example(s) in <code>manifest.json</code>.
+      Run <code>python user_study/build_manifest.py</code> after placing matching PNGs in
+      <code>data/renders/intentdit/</code> and <code>data/renders/layoutdit/</code> (and failure images under <code>data/failures/</code>). Otherwise &ldquo;Begin&rdquo; will show an error instead of the study.
+    </p>
+    {% endif %}
+    <form method="post" action="/start">
+      <p>Are you a professional or student designer?</p>
+      <label><input type="radio" name="designer" value="yes" required> Yes</label>
+      <label><input type="radio" name="designer" value="no"> No</label>
+      <p><button type="submit">Begin</button></p>
+    </form>
+  </main>
+</body>
+</html>

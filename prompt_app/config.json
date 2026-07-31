@@ -1,0 +1,17 @@
+{
+  "host": "0.0.0.0",
+  "port": 7860,
+  "backup_on_save": true,
+  "datasets": {
+    "pku": {
+      "label": "PKU",
+      "csv": "free_form_pku.csv",
+      "image_dir": "pku"
+    },
+    "cgl": {
+      "label": "CGL",
+      "csv": "free_form_cgl.csv",
+      "image_dir": "cgl"
+    }
+  }
+}

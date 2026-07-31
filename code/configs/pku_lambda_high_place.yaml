@@ -1,0 +1,69 @@
+task: 'uncond'
+
+# Dataset configuration
+num_class: 4
+train_batch_size: 32
+test_batch_size: 128
+width: 513
+height: 750
+dataset_cls: 'pku'
+experiment_name: 'pku_uncond'
+
+# Paths
+paths:
+  base: "data/dataset/pku/split"
+  train:
+    inp_dir: "train/inpaint"
+    sal_dir: "train/saliency"
+    sal_sub_dir: "train/saliency_sub"
+    intent_map_dir: "train/intent_map"
+    annotated_dir: "csv/train.csv"
+    salbox_dir: "csv/train_sal.csv"
+    intentbox_dir: "csv/train_intent_mbbox.csv"
+    basic_prompt: "csv/train_with_prompts_basic.csv"
+    enhanced_prompt: "csv/train_with_prompts_enhanced.csv"
+    advanced_prompt: "csv/train_with_prompts_advanced.csv"
+    all_prompts: "csv/train_with_all_prompts.csv"
+  test:
+    inp_dir: "val/inpaint"
+    sal_dir: "val/saliency"
+    sal_sub_dir: "val/saliency_sub"
+    intent_map_dir: "val/intent_map"
+    annotated_dir: "csv/val.csv"
+    salbox_dir: "csv/val_sal.csv"
+    intentbox_dir: "csv/val_intent_mbbox.csv"
+    basic_prompt: "csv/val_with_prompts_basic.csv"
+    enhanced_prompt: "csv/val_with_prompts_enhanced.csv"
+    advanced_prompt: "csv/val_with_prompts_advanced.csv"
+    all_prompts: "csv/val_with_all_prompts.csv"
+
+# Model parameters
+max_elem: 16
+lr: 1.0e-4
+epochs: 500
+gradient_clipping: 1.0
+d_model: 512
+n_head: 8
+n_layers: 4
+feature_dim: 1024
+
+# Runtime configuration
+num_workers: 16
+log_test_epochs: 5
+base_check_dir: 'data/checkpoints/pku'
+imgname_order_dir: 'data/output/ptfile/image_name_order'
+
+# Dynamic configuration
+datetime: null
+
+# Text conditioning configuration
+text_conditioning: true
+text_encoder:
+  model_name: "bert-base-uncased"
+  max_length: 128
+  freeze_weights: true
+prompt_style: "enhanced"  # basic, enhanced, advanced
+
+# Auxiliary losses (lambda1=L_count, lambda2=L_place)
+lambda1: 0.1   # differentiable prompt-count alignment
+lambda2: 0.10  # L_place: placement-region IoU loss

@@ -1,0 +1,51 @@
+task: 'uncond'
+
+# Dataset configuration
+num_class: 5
+batch_size: 128
+width: 800
+height: 1200
+dataset_cls: 'cgl'
+
+# Paths
+paths:
+  base: "data/dataset/cgl/split"
+  test:
+    inp_dir: "test_unanno/image_canvas"
+    sal_dir: "test_unanno/saliency"
+    sal_sub_dir: "test_unanno/saliency_sub"
+    intent_map_dir: "test_unanno/intent_map"
+    salbox_dir: "csv/test_unanno_sal.csv"
+    intentbox_dir: "csv/test_unanno_intent_mbbox.csv"
+    basic_prompt: "csv/test_with_prompts_basic.csv"
+    enhanced_prompt: "csv/test_with_prompts_enhanced.csv"
+    advanced_prompt: "csv/test_with_prompts_advanced.csv"
+    all_prompts: "csv/test_with_all_prompts.csv"
+
+# Model parameters
+max_elem: 16
+lr: 2.0e-4
+epochs: 500
+gradient_clipping: 1.0
+d_model: 512
+n_head: 8
+n_layers: 4
+feature_dim: 1024
+
+# Runtime configuration
+num_workers: 16
+log_test_epochs: 5
+base_check_dir: 'data/checkpoints/cgl'
+imgname_order_dir: 'data/output/ptfile/image_name_order'
+save_imgs_dir: 'data/output/image'
+
+# Dynamic configuration
+datetime: null
+
+# Text conditioning configuration
+text_conditioning: true
+text_encoder:
+  model_name: "bert-base-uncased"
+  max_length: 128
+  freeze_weights: true
+prompt_style: "enhanced"  # basic, enhanced, advanced

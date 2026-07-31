@@ -1,0 +1,57 @@
+# Example config for run_fair_eval_all.py
+# Copy to experiments_fair_eval.yaml and fill in check_path for each experiment.
+# Use the same checkpoint rule for all (e.g. Epoch400 or Epoch500).
+# Base dir: data/checkpoints/{pku|cgl}/
+
+experiments:
+  # PKU ViT
+  - experiment_name: pku_vit_saliency
+    dataset: pku
+    check_path: data/checkpoints/pku/pku_vit_saliency/<datetime>/Epoch400_cgbdm_weights.pth
+    v_encoder: vit
+    spatial_guidance: 0
+    text_control: false
+
+  - experiment_name: pku_vit_intent
+    dataset: pku
+    check_path: data/checkpoints/pku/pku_vit_intent/<datetime>/Epoch400_cgbdm_weights.pth
+    v_encoder: vit
+    spatial_guidance: 1
+    text_control: false
+
+  - experiment_name: pku_vit_both
+    dataset: pku
+    check_path: data/checkpoints/pku/pku_vit_both/<datetime>/Epoch400_cgbdm_weights.pth
+    v_encoder: vit
+    spatial_guidance: 2
+    text_control: false
+
+  - experiment_name: pku_vit_saliency_text
+    dataset: pku
+    check_path: data/checkpoints/pku/pku_vit_saliency_text/<datetime>/Epoch400_cgbdm_weights.pth
+    v_encoder: vit
+    spatial_guidance: 0
+    text_control: true
+
+  - experiment_name: pku_vit_intent_text
+    dataset: pku
+    check_path: data/checkpoints/pku/pku_vit_intent_text/<datetime>/Epoch400_cgbdm_weights.pth
+    v_encoder: vit
+    spatial_guidance: 1
+    text_control: true
+
+  - experiment_name: pku_vit_both_text
+    dataset: pku
+    check_path: data/checkpoints/pku/pku_vit_both_text/<datetime>/Epoch400_cgbdm_weights.pth
+    v_encoder: vit
+    spatial_guidance: 2
+    text_control: true
+
+  # Add remaining PKU Swin and CGL experiments with real check_path values.
+  # CGL example:
+  # - experiment_name: cgl_vit_saliency
+  #   dataset: cgl
+  #   check_path: /path/to/data/checkpoints/cgl/cgl_vit_saliency/10_31_1154/Epoch400_cgbdm_weights.pth
+  #   v_encoder: vit
+  #   spatial_guidance: 0
+  #   text_control: false

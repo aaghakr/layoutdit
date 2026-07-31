@@ -1,0 +1,1 @@
+"""IntentDiT regression tests."""

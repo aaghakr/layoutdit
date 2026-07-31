@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the associated paper."
+title: "IntentDiT: Prompt-Controllable Diffusion Transformer for Intent-Aware Poster Layout Generation"
+version: "0.1.0"
+date-released: "2026-07-31"
+authors:
+  - family-names: Aagha
+    given-names: Abdul Waheed
+  - family-names: Kim
+    given-names: Seong-heum
+repository-code: "https://github.com/aaghakr/layoutdit"
+license: "Apache-2.0"
+preferred-citation:
+  type: article
+  title: "IntentDiT: Prompt-Controllable Diffusion Transformer for Intent-Aware Poster Layout Generation"
+  authors:
+    - family-names: Aagha
+      given-names: Abdul Waheed
+    - family-names: Kim
+      given-names: Seong-heum
+  year: 2026
+  notes: "Manuscript under review."

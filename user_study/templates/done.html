@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Thank you!</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Thank you for participating!</h1>
+    <p>Your responses have been saved. Participant ID: <code>{{ pid }}</code></p>
+    {% if prolific_url %}
+      <p><a href="{{ prolific_url }}" class="btn">Return to Prolific to claim payment</a></p>
+    {% else %}
+      <p>You can close this window now.</p>
+    {% endif %}
+  </main>
+</body>
+</html>

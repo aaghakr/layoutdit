@@ -1,0 +1,5 @@
+IntentDiT adds intent maps and token-level text control to layout diffusion.
+Schedule-consistent IntentDiT inference reveals a density–structure trade-off.
+Free-form prompts test controllability beyond deterministic templates.
+Shared-evaluator baselines separate quality from prompt-conditioning gains.
+A 30-participant study favors quality and instruction-following.

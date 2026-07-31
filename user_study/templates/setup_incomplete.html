@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Study setup incomplete</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Study not ready yet</h1>
+    {% if reason == "part_a" %}
+    <p><strong>Part A has no trials.</strong> The manifest is empty because there are no PNG filenames that appear in <em>both</em> of these folders:</p>
+    <ul>
+      <li><code>user_study/data/renders/intentdit/</code></li>
+      <li><code>user_study/data/renders/layoutdit/</code></li>
+    </ul>
+    <p>You must have the <strong>same filenames</strong> in both folders (e.g. <code>125.png</code> in intentdit and in layoutdit). If you only generated IntentDiT images so far, add a <code>layoutdit/</code> folder with baseline renders (or, for a quick local smoke test only, duplicate the same PNGs under <code>layoutdit/</code> with matching names).</p>
+    <p>Earlier versions of the manifest builder incorrectly required a third folder (<code>postero/</code>); if that folder was missing, Part A was always empty. After fixing folders, <strong>re-run:</strong></p>
+    <pre style="font-size:0.85rem; background:#f0f0f0; padding:0.75rem; border-radius:8px;">cd /path/to/intent_aware_layout_generation
+python user_study/build_manifest.py --n 30 --per-category 5</pre>
+    <p>Then restart the Flask app and open the study again from the home page (your session id was <code>{{ pid }}</code>).</p>
+    {% else %}
+    <p><strong>Part B has no examples.</strong> Add PNGs under <code>user_study/data/failures/&lt;category&gt;/</code> (see README), then run <code>build_manifest.py</code> again.</p>
+    {% endif %}
+    <p><a href="{{ url_for('index') }}">Back to home</a></p>
+  </main>
+</body>
+</html>

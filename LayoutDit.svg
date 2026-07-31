@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="900" viewBox="0 0 1800 900" role="img" aria-labelledby="title desc">
+  <title id="title">IntentDiT architecture</title>
+  <desc id="desc">Multimodal encoders condition a four-block diffusion transformer using image, saliency, intent, text, and text-spatial controls. The model predicts layout noise for training and DDIM sampling.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#344054"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#2563A8"/>
+    </marker>
+    <style>
+      .bg { fill:#FFFFFF; }
+      .panel { fill:#F8FAFC; stroke:#344054; stroke-width:2; }
+      .panel-head { fill:#EEF2F6; stroke:#344054; stroke-width:2; }
+      .input { fill:#EAF0FA; stroke:#52657A; stroke-width:1.8; }
+      .map { fill:#E1F3F3; stroke:#397D80; stroke-width:1.8; }
+      .spatial { fill:#E8F2DE; stroke:#608447; stroke-width:1.8; }
+      .text { fill:#E5EEFB; stroke:#3B6EA8; stroke-width:1.8; }
+      .layout { fill:#F3EFD8; stroke:#8A7B2C; stroke-width:1.8; }
+      .time { fill:#FFF1C7; stroke:#B07B12; stroke-width:1.8; }
+      .image-attn { fill:#DCEBCB; stroke:#668D43; stroke-width:1.8; }
+      .intent-attn { fill:#CFEDEA; stroke:#2A8984; stroke-width:1.8; }
+      .text-attn { fill:#DCE8F8; stroke:#2563A8; stroke-width:1.8; }
+      .neutral { fill:#E8EAED; stroke:#667085; stroke-width:1.8; }
+      .output { fill:#F3F0EB; stroke:#6B675F; stroke-width:1.8; }
+      .loss { fill:#FCE8E6; stroke:#B5473C; stroke-width:1.8; }
+      .flow { fill:none; stroke:#344054; stroke-width:2.2; marker-end:url(#arrow); }
+      .flow-thin { fill:none; stroke:#344054; stroke-width:1.8; marker-end:url(#arrow); }
+      .override { fill:none; stroke:#2563A8; stroke-width:2.2; stroke-dasharray:8 6; marker-end:url(#arrow-blue); }
+      .guide { fill:none; stroke:#98A2B3; stroke-width:1.5; stroke-dasharray:5 5; }
+      text { font-family:Arial, Helvetica, sans-serif; fill:#1D2939; }
+      .h1 { font-size:28px; font-weight:700; }
+      .h2 { font-size:22px; font-weight:700; }
+      .h3 { font-size:18px; font-weight:700; }
+      .label { font-size:17px; font-weight:600; }
+      .body { font-size:16px; }
+      .small { font-size:14px; }
+      .tiny { font-size:12px; }
+      .math { font-family:"Times New Roman", Times, serif; font-size:17px; font-style:italic; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1800" height="900"/>
+
+  <!-- Section headings -->
+  <text class="h1" x="40" y="48">(a) Multimodal conditioning and encoding</text>
+  <text class="h1" x="790" y="48">(b) IntentDiT denoiser</text>
+  <text class="h1" x="1430" y="48">(c) Prediction</text>
+
+  <!-- Left panel: multimodal encoders -->
+  <rect class="panel" x="28" y="66" width="710" height="802" rx="14"/>
+
+  <!-- Visual inputs -->
+  <text class="h2" x="50" y="99">Visual priors</text>
+  <rect class="input" x="50" y="118" width="185" height="68" rx="10"/>
+  <rect x="65" y="133" width="42" height="38" rx="4" fill="#91B7D5"/>
+  <circle cx="96" cy="143" r="6" fill="#FFE29A"/>
+  <path d="M65 167 L82 151 L92 159 L105 147 L107 171 L65 171 Z" fill="#5B8D55"/>
+  <text class="label" x="120" y="148">Background</text>
+  <text class="math" x="120" y="170">B ∈ ℝ<tspan baseline-shift="super" font-size="12">H×W×3</tspan></text>
+
+  <rect class="map" x="50" y="202" width="185" height="68" rx="10"/>
+  <rect x="65" y="217" width="42" height="38" rx="4" fill="#182A3A"/>
+  <circle cx="86" cy="236" r="13" fill="#F5D547" opacity="0.9"/>
+  <text class="label" x="120" y="232">Saliency map</text>
+  <text class="tiny" x="120" y="251">off-the-shelf detector</text>
+
+  <rect class="map" x="50" y="286" width="185" height="68" rx="10"/>
+  <rect x="65" y="301" width="42" height="38" rx="4" fill="#153E3D"/>
+  <rect x="77" y="308" width="20" height="24" rx="3" fill="#63D1C8"/>
+  <text class="label" x="120" y="316">Intent map</text>
+  <text class="tiny" x="120" y="335">learned predictor</text>
+
+  <!-- Concatenation and visual encoder -->
+  <path class="flow-thin" d="M235 152 H265 V206 H286"/>
+  <path class="flow-thin" d="M235 236 H286"/>
+  <path class="flow-thin" d="M235 320 H265 V266 H286"/>
+  <circle cx="302" cy="236" r="24" fill="#FFFFFF" stroke="#52657A" stroke-width="1.8"/>
+  <text class="label" x="295" y="242">⊕</text>
+  <text class="tiny" x="272" y="276">4/5 channels</text>
+  <path class="flow" d="M326 236 H354"/>
+  <rect class="spatial" x="354" y="184" width="176" height="104" rx="10"/>
+  <text class="label" x="442" y="224" text-anchor="middle">Visual encoder</text>
+  <text class="body" x="442" y="249" text-anchor="middle">ViT / Swin</text>
+  <text class="tiny" x="442" y="272" text-anchor="middle">[B; S and/or M]</text>
+  <path class="flow" d="M530 222 H692"/>
+  <text class="math" x="550" y="209">F<tspan baseline-shift="sub" font-size="12">img</tspan> ∈ ℝ<tspan baseline-shift="super" font-size="12">N×D</tspan></text>
+
+  <rect x="548" y="258" width="128" height="62" rx="10" fill="#E9DDF1" stroke="#76548A" stroke-width="1.8"/>
+  <text class="label" x="612" y="284" text-anchor="middle">Q-former</text>
+  <text class="tiny" x="612" y="305" text-anchor="middle">Softplus head</text>
+  <path class="flow-thin" d="M548 222 H542 V289 H548"/>
+  <path class="flow" d="M676 289 H692"/>
+  <text class="math" x="651" y="274">w<tspan baseline-shift="sub" font-size="12">CGB</tspan></text>
+
+  <!-- Region box encoders -->
+  <text class="h2" x="50" y="397">Region geometry</text>
+  <rect class="spatial" x="50" y="416" width="210" height="78" rx="10"/>
+  <rect x="67" y="433" width="38" height="34" fill="none" stroke="#D48832" stroke-width="3"/>
+  <text class="label" x="120" y="447">Saliency boxes</text>
+  <text class="math" x="120" y="471">b<tspan baseline-shift="sub" font-size="12">sal</tspan> ∈ ℝ<tspan baseline-shift="super" font-size="12">Nₛ×4</tspan></text>
+  <rect class="spatial" x="50" y="510" width="210" height="78" rx="10"/>
+  <rect x="67" y="527" width="38" height="34" fill="none" stroke="#318C88" stroke-width="3"/>
+  <text class="label" x="120" y="541">Intent boxes</text>
+  <text class="math" x="120" y="565">b<tspan baseline-shift="sub" font-size="12">intent</tspan> ∈ ℝ<tspan baseline-shift="super" font-size="12">Nᵢ×4</tspan></text>
+  <rect class="spatial" x="308" y="416" width="152" height="78" rx="10"/>
+  <text class="label" x="384" y="447" text-anchor="middle">Box MLP</text>
+  <text class="small" x="384" y="471" text-anchor="middle">4 → D</text>
+  <rect class="intent-attn" x="308" y="510" width="152" height="78" rx="10"/>
+  <text class="label" x="384" y="541" text-anchor="middle">Box MLP</text>
+  <text class="small" x="384" y="565" text-anchor="middle">4 → D</text>
+  <path class="flow" d="M260 455 H308"/>
+  <path class="flow" d="M260 549 H308"/>
+  <path class="flow" d="M460 455 H692"/>
+  <path class="flow" d="M460 549 H692"/>
+  <text class="math" x="492" y="443">F<tspan baseline-shift="sub" font-size="12">sal</tspan></text>
+  <text class="math" x="492" y="537">F<tspan baseline-shift="sub" font-size="12">intent</tspan></text>
+
+  <!-- Text encoders -->
+  <text class="h2" x="50" y="631">User control</text>
+  <rect class="text" x="50" y="650" width="185" height="68" rx="10"/>
+  <path d="M67 668 H104 V695 H86 L75 704 V695 H67 Z" fill="#68BDB5"/>
+  <text class="label" x="120" y="681">Text prompt</text>
+  <text class="math" x="120" y="704">p</text>
+  <rect class="text" x="282" y="628" width="165" height="68" rx="10"/>
+  <text class="label" x="365" y="657" text-anchor="middle">Frozen BERT</text>
+  <text class="tiny" x="365" y="678" text-anchor="middle">token sequence + mask</text>
+  <rect class="text-attn" x="500" y="628" width="150" height="68" rx="10"/>
+  <text class="label" x="575" y="657" text-anchor="middle">Projection</text>
+  <text class="math" x="575" y="681" text-anchor="middle">F<tspan baseline-shift="sub" font-size="12">text</tspan></text>
+  <path class="flow" d="M235 675 H282"/>
+  <path class="flow" d="M447 662 H500"/>
+  <path class="flow" d="M650 662 H692"/>
+
+  <rect class="text" x="282" y="726" width="165" height="78" rx="10"/>
+  <text class="label" x="365" y="755" text-anchor="middle">Spatial parser</text>
+  <text class="tiny" x="365" y="777" text-anchor="middle">class + coarse position</text>
+  <text class="tiny" x="365" y="795" text-anchor="middle">slot matching</text>
+  <rect class="text-attn" x="500" y="726" width="150" height="78" rx="10"/>
+  <text class="label" x="575" y="755" text-anchor="middle">Position MLP</text>
+  <text class="math" x="575" y="782" text-anchor="middle">F<tspan baseline-shift="sub" font-size="12">pos</tspan></text>
+  <path class="flow-thin" d="M235 675 H256 V765 H282"/>
+  <path class="override" d="M447 765 H500"/>
+  <path class="override" d="M650 765 H692"/>
+
+  <!-- Noisy layout encoding -->
+  <rect class="layout" x="50" y="792" width="185" height="58" rx="10"/>
+  <text class="label" x="82" y="819">Noisy layout</text>
+  <text class="math" x="190" y="819">y<tspan baseline-shift="sub" font-size="12">t</tspan></text>
+  <text class="tiny" x="82" y="839">class + box tokens</text>
+  <rect class="layout" x="282" y="814" width="165" height="36" rx="9"/>
+  <text class="small" x="365" y="837" text-anchor="middle">Layout encoder</text>
+  <path class="flow" d="M235 821 H282"/>
+  <path class="flow" d="M447 832 H765 V116 H815"/>
+
+  <!-- Center panel: decoder -->
+  <rect class="panel" x="780" y="66" width="604" height="802" rx="14"/>
+  <rect class="panel-head" x="815" y="88" width="534" height="63" rx="10"/>
+  <text class="h2" x="1082" y="116" text-anchor="middle">One decoder block</text>
+  <text class="small" x="1082" y="139" text-anchor="middle">repeated ×4 with residual connections</text>
+
+  <rect class="time" x="855" y="174" width="454" height="72" rx="10"/>
+  <text class="label" x="1082" y="204" text-anchor="middle">AdaLayerNorm(t) + layout self-attention</text>
+  <text class="small" x="1082" y="228" text-anchor="middle">queries are noisy layout tokens</text>
+  <rect class="time" x="790" y="178" width="48" height="48" rx="24"/>
+  <text class="math" x="814" y="208" text-anchor="middle">t</text>
+  <path class="flow-thin" d="M838 202 H855"/>
+
+  <rect class="image-attn" x="855" y="272" width="454" height="72" rx="10"/>
+  <text class="label" x="1082" y="301" text-anchor="middle">Image cross-attention × w<tspan baseline-shift="sub" font-size="12">CGB</tspan></text>
+  <text class="small" x="1082" y="326" text-anchor="middle">keys / values: F<tspan baseline-shift="sub" font-size="11">img</tspan></text>
+
+  <rect class="spatial" x="855" y="370" width="454" height="72" rx="10"/>
+  <text class="label" x="1082" y="399" text-anchor="middle">Saliency-box cross-attention</text>
+  <text class="small" x="1082" y="424" text-anchor="middle">keys / values: F<tspan baseline-shift="sub" font-size="11">sal</tspan></text>
+
+  <rect class="intent-attn" x="855" y="468" width="454" height="86" rx="10"/>
+  <text class="label" x="1082" y="496" text-anchor="middle">Intent OR text-spatial cross-attention</text>
+  <text class="small" x="1082" y="520" text-anchor="middle">F<tspan baseline-shift="sub" font-size="11">pos</tspan> replaces F<tspan baseline-shift="sub" font-size="11">intent</tspan> when positions are parsed</text>
+  <text class="tiny" x="1082" y="541" text-anchor="middle">key mask retains only supplied text-spatial positions</text>
+
+  <rect class="text-attn" x="855" y="580" width="454" height="72" rx="10"/>
+  <text class="label" x="1082" y="609" text-anchor="middle">Text-token cross-attention</text>
+  <text class="small" x="1082" y="634" text-anchor="middle">keys / values: F<tspan baseline-shift="sub" font-size="11">text</tspan> with padding mask</text>
+
+  <rect class="neutral" x="855" y="678" width="454" height="64" rx="10"/>
+  <text class="label" x="1082" y="716" text-anchor="middle">Feed-forward network</text>
+
+  <path class="flow-thin" d="M1082 246 V272"/>
+  <path class="flow-thin" d="M1082 344 V370"/>
+  <path class="flow-thin" d="M1082 442 V468"/>
+  <path class="flow-thin" d="M1082 554 V580"/>
+  <path class="flow-thin" d="M1082 652 V678"/>
+  <path class="guide" d="M1330 174 C1360 174 1360 742 1330 742"/>
+  <text class="label" x="1342" y="465">×4</text>
+
+  <!-- Conditioning arrows into decoder -->
+  <path class="flow" d="M692 222 H758 V308 H855"/>
+  <path class="flow" d="M692 289 H744 V325 H855"/>
+  <path class="flow" d="M692 455 H770 V406 H855"/>
+  <path class="flow" d="M692 549 H790 V511 H855"/>
+  <path class="override" d="M692 765 H812 V530 H855"/>
+  <text class="tiny" x="704" y="749" fill="#2563A8">replace intent keys</text>
+  <path class="flow" d="M692 662 H826 V616 H855"/>
+
+  <!-- Right panel: prediction, objectives, and sampler -->
+  <rect class="panel" x="1415" y="66" width="357" height="802" rx="14"/>
+  <path class="flow" d="M1309 710 H1372 V196 H1450"/>
+  <rect class="output" x="1450" y="140" width="287" height="112" rx="12"/>
+  <text class="h2" x="1594" y="174" text-anchor="middle">Noise prediction</text>
+  <text class="math" x="1594" y="204" text-anchor="middle">ε<tspan baseline-shift="sub" font-size="12">θ</tspan>(y<tspan baseline-shift="sub" font-size="12">t</tspan>, t | c)</text>
+  <text class="math" x="1594" y="233" text-anchor="middle">∈ ℝ<tspan baseline-shift="super" font-size="12">Nₘₐₓ×(C+4)</tspan></text>
+
+  <text class="h3" x="1450" y="302">Training</text>
+  <path class="flow-thin" d="M1594 252 V322"/>
+  <rect class="loss" x="1450" y="322" width="287" height="104" rx="12"/>
+  <text class="label" x="1594" y="352" text-anchor="middle">Multi-objective loss</text>
+  <text class="math" x="1594" y="381" text-anchor="middle">L = L<tspan baseline-shift="sub" font-size="12">ε</tspan> + λ<tspan baseline-shift="sub" font-size="12">count</tspan>L<tspan baseline-shift="sub" font-size="12">count</tspan></text>
+  <text class="math" x="1594" y="407" text-anchor="middle">+ λ<tspan baseline-shift="sub" font-size="12">place</tspan>L<tspan baseline-shift="sub" font-size="12">place</tspan></text>
+
+  <text class="h3" x="1450" y="482">Inference</text>
+  <path class="flow-thin" d="M1737 196 H1752 V526 H1737"/>
+  <rect class="output" x="1450" y="506" width="287" height="84" rx="12"/>
+  <text class="label" x="1594" y="538" text-anchor="middle">DDIM update</text>
+  <text class="math" x="1594" y="568" text-anchor="middle">y<tspan baseline-shift="sub" font-size="12">t</tspan> → y<tspan baseline-shift="sub" font-size="12">t−1</tspan></text>
+  <path class="flow" d="M1594 590 V640"/>
+  <text class="tiny" x="1608" y="620">repeat t = T,…,1</text>
+  <rect class="layout" x="1450" y="640" width="287" height="112" rx="12"/>
+  <text class="h2" x="1594" y="675" text-anchor="middle">Generated layout</text>
+  <text class="body" x="1594" y="705" text-anchor="middle">element classes + boxes</text>
+  <text class="math" x="1594" y="733" text-anchor="middle">{c, c<tspan baseline-shift="sub" font-size="12">x</tspan>, c<tspan baseline-shift="sub" font-size="12">y</tspan>, w, h}</text>
+
+  <!-- Footer note -->
+  <text class="small" x="790" y="842">Solid arrows: conditioning flow</text>
+  <line x1="1003" y1="837" x2="1050" y2="837" class="override"/>
+  <text class="small" x="1064" y="842">text-spatial replacement path</text>
+</svg>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Part A: {{ idx }} / {{ total }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card wide">
+    <header>
+      {% if item.criterion == "instruction" %}
+      <h2>Pick the layout that better follows the instruction</h2>
+      {% else %}
+      <h2>Pick the more professional layout</h2>
+      {% endif %}
+      <p class="muted">Trial {{ idx }} of {{ total }} &middot; participant {{ pid }}</p>
+    </header>
+
+    {% if item.criterion == "instruction" %}
+    <p><strong>User instruction:</strong> {{ item.prompt }}</p>
+    <p class="muted">
+      Judge only how well each layout follows this instruction while remaining usable.
+      If they follow it equally well, choose "Tie".
+    </p>
+    {% else %}
+    <p class="muted">
+      Look at the two posters. Choose the one whose layout would more likely be
+      published by a professional designer. If they look equal, choose "Tie".
+    </p>
+    {% endif %}
+
+    <form method="post" id="trial">
+      <input type="hidden" name="image_id"     value="{{ item.image_id }}">
+      <input type="hidden" name="left_method"  value="{{ item.left_method }}">
+      <input type="hidden" name="right_method" value="{{ item.right_method }}">
+      <input type="hidden" name="criterion"    value="{{ item.criterion }}">
+      <input type="hidden" name="prompt"       value="{{ item.prompt }}">
+      <input type="hidden" name="latency_ms"   id="latency_ms" value="0">
+
+      <div class="pair">
+        <figure>
+          <img src="/renders/{{ item.left_render }}" alt="Left" loading="eager">
+          <figcaption>Option A</figcaption>
+        </figure>
+        <figure>
+          <img src="/renders/{{ item.right_render }}" alt="Right" loading="eager">
+          <figcaption>Option B</figcaption>
+        </figure>
+      </div>
+
+      <div class="row">
+        <button type="submit" name="choice" value="left">Option A is better</button>
+        <button type="submit" name="choice" value="tie" class="muted-btn">Tie</button>
+        <button type="submit" name="choice" value="right">Option B is better</button>
+      </div>
+
+      <details>
+        <summary>Optional: tell us why (one sentence)</summary>
+        <textarea name="rationale" rows="2" maxlength="280"
+                  placeholder="e.g. Left occludes the subject; Right has cleaner alignment."></textarea>
+      </details>
+    </form>
+  </main>
+
+  <script>
+    const t0 = performance.now();
+    document.getElementById("trial").addEventListener("submit", () => {
+      document.getElementById("latency_ms").value = Math.round(performance.now() - t0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Part B: {{ idx }} / {{ total }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h2>How serious is this layout failure?</h2>
+      <p class="muted">Item {{ idx }} of {{ total }} &middot; participant {{ pid }}</p>
+    </header>
+
+    <p>
+      The poster below has a <strong>{{ item.category | replace('_', ' ') }}</strong> failure.
+      Rate how seriously this affects the design quality (1 = trivial, 7 = catastrophic).
+    </p>
+    <figure>
+      <img src="/renders/{{ item.render }}" alt="Failure example" loading="eager">
+    </figure>
+
+    <form method="post" id="rate">
+      <input type="hidden" name="category"   value="{{ item.category }}">
+      <input type="hidden" name="example_id" value="{{ item.example_id }}">
+      <input type="hidden" name="latency_ms" id="latency_ms" value="0">
+      <fieldset class="severity">
+        {% for v in range(1, 8) %}
+          <label><input type="radio" name="severity" value="{{ v }}" required> {{ v }}</label>
+        {% endfor %}
+      </fieldset>
+      <p class="muted">1 = barely noticeable &middot; 4 = noticeable but acceptable &middot; 7 = unusable poster</p>
+      <p><button type="submit">Submit</button></p>
+    </form>
+  </main>
+
+  <script>
+    const t0 = performance.now();
+    document.getElementById("rate").addEventListener("submit", () => {
+      document.getElementById("latency_ms").value = Math.round(performance.now() - t0);
+    });
+  </script>
+</body>
+</html>
